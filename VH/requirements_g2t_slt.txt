@@ -1,0 +1,14 @@
+# Extra packages for the fast G2T/SLT branch.
+# Do not install torch/torchvision from here; use the CUDA-compatible
+# torch stack already configured in the cluster venv/module.
+numpy
+PyYAML
+tqdm
+editdistance
+sacrebleu
+rouge-score
+nltk
+pillow
+transformers
+sentencepiece
+protobuf

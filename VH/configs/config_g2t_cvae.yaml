@@ -1,0 +1,58 @@
+experiment_name: "g2t_cvae_latent_gloss2text"
+seed: 42
+
+paths:
+  phoenix_root: "/datastore/cndt_phungdtm/KLTN_HoangBinh/Dataset/PHOENIX-2014-T"
+  frames_root: "/datastore/cndt_phungdtm/KLTN_HoangBinh/Dataset/PHOENIX-2014-T/features/fullFrame-210x260px"
+  annot_root: "/datastore/cndt_phungdtm/KLTN_HoangBinh/Dataset/PHOENIX-2014-T/annotations/manual"
+  checkpoint_dir: "checkpoints_g2t_slt"
+  log_dir: "logs_g2t_slt"
+
+data:
+  num_workers: 2
+
+predicted_gloss:
+  train:
+  dev:
+  test:
+
+g2t_slt:
+  # CVAE-style latent G2T. The decoder receives a learned latent memory token
+  # sampled from q(z | gloss, text) in training and from p(z | gloss) in eval.
+  model_type: "latent_cvae"
+  train_source: "gt"
+  batch_size: 64
+  eval_batch_size: 96
+  num_epochs: 50
+  grad_accumulation_steps: 1
+
+  learning_rate: 3.0e-4
+  eta_min: 1.0e-6
+  warmup_steps: 200
+  weight_decay: 1.0e-4
+  label_smoothing: 0.1
+  gradient_clip: 1.0
+  use_amp: true
+
+  d_model: 256
+  nhead: 4
+  num_encoder_layers: 3
+  num_decoder_layers: 3
+  dim_feedforward: 1024
+  dropout: 0.1
+  max_src_len: 128
+  max_tgt_len: 128
+
+  domain_prefix_len: 1
+  use_weather_slots: true
+  use_conv_gate: true
+  use_confidence_token: false
+
+  latent_dim: 64
+  kl_weight: 0.01
+  kl_warmup_steps: 500
+
+  early_stopping:
+    enabled: true
+    patience: 8
+    metric: "BLEU-4"

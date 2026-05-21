@@ -1,0 +1,60 @@
+experiment_name: "g2t_final_fused_mbart"
+seed: 42
+
+paths:
+  phoenix_root: "/datastore/cndt_phungdtm/KLTN_HoangBinh/Dataset/PHOENIX-2014-T"
+  frames_root: "/datastore/cndt_phungdtm/KLTN_HoangBinh/Dataset/PHOENIX-2014-T/features/fullFrame-210x260px"
+  annot_root: "/datastore/cndt_phungdtm/KLTN_HoangBinh/Dataset/PHOENIX-2014-T/annotations/manual"
+  checkpoint_dir: "checkpoints_g2t_slt"
+  log_dir: "logs_g2t_slt"
+
+data:
+  num_workers: 2
+
+predicted_gloss:
+  train:
+  dev:
+  test:
+
+g2t_slt:
+  model_type: "mbart"
+  pretrained_model_name: "facebook/mbart-large-50"
+  source_prefix: "translate confidence tagged fused sign gloss to German: "
+  src_lang: "de_DE"
+  tgt_lang: "de_DE"
+
+  train_source: "gt"
+  batch_size: 2
+  eval_batch_size: 4
+  num_epochs: 20
+  grad_accumulation_steps: 8
+
+  learning_rate: 2.0e-5
+  eta_min: 1.0e-7
+  warmup_steps: 200
+  weight_decay: 0.01
+  gradient_clip: 1.0
+  use_amp: true
+
+  max_src_len: 128
+  max_tgt_len: 128
+  num_beams: 4
+  length_penalty: 1.0
+  freeze_encoder: false
+  gradient_checkpointing: true
+  use_fast_tokenizer: false
+
+  use_weather_slots: false
+  use_conv_gate: false
+  use_confidence_token: true
+  confidence_augmentation:
+    enabled: false
+    train_bucket_probs:
+      low: 0.15
+      mid: 0.35
+      high: 0.50
+
+  early_stopping:
+    enabled: true
+    patience: 5
+    metric: "BLEU-4"
